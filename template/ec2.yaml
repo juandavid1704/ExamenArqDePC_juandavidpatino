@@ -1,159 +1,159 @@
-```yaml
 AWSTemplateFormatVersion: "2010-09-09"
 Description: EC2 creada con CloudFormation y GitHub Actions para parcial en pareja
 
 Parameters:
-  InstanceDescription:
-    Description: Descripcion del servidor web
-    Type: String
-    Default: Servidor Web Apache desplegado desde GitHub Actions
+InstanceDescription:
+Description: Descripcion del servidor web
+Type: String
+Default: Servidor Web Apache desplegado desde GitHub Actions
 
-  SecurityGroupDescription:
-    Description: Security Group Description
-    Type: String
-    Default: Acceso HTTP al servidor web
+SecurityGroupDescription:
+Description: Security Group Description
+Type: String
+Default: Acceso HTTP al servidor web
 
 Resources:
-  ServerSecurityGroupClase:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: !Ref SecurityGroupDescription
-      Tags:
-        - Key: Name
-          Value: SG-HTTP-Parcial-CF
-        - Key: Proyecto
-          Value: Parcial-CloudFormation-GitHub
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
+ServerSecurityGroupClase:
+Type: AWS::EC2::SecurityGroup
+Properties:
+GroupDescription: !Ref SecurityGroupDescription
+Tags:
+- Key: Name
+Value: SG-HTTP-Parcial-CF
+- Key: Proyecto
+Value: Parcial-CloudFormation-GitHub
+SecurityGroupIngress:
+- IpProtocol: tcp
+FromPort: 80
+ToPort: 80
+CidrIp: 0.0.0.0/0
 
-  MyInstanceClase:
-    Type: AWS::EC2::Instance
-    Properties:
-      ImageId: ami-0236922087fa98b6e
-      InstanceType: t3.micro
-      SecurityGroupIds:
-        - !GetAtt ServerSecurityGroupClase.GroupId
-      Tags:
-        - Key: Name
-          Value: EC2-Parcial-Pareja
-        - Key: Proyecto
-          Value: Parcial-CloudFormation-GitHub
-        - Key: Ambiente
-          Value: Desarrollo
-      UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          yum update -y
-          yum install -y httpd
-          systemctl start httpd
-          systemctl enable httpd
+MyInstanceClase:
+Type: AWS::EC2::Instance
+Properties:
+ImageId: ami-0236922087fa98b6e
+InstanceType: t3.micro
+SecurityGroupIds:
+- !GetAtt ServerSecurityGroupClase.GroupId
+Tags:
+- Key: Name
+Value: EC2-Parcial-Pareja
+- Key: Proyecto
+Value: Parcial-CloudFormation-GitHub
+- Key: Ambiente
+Value: Desarrollo
+UserData:
+Fn::Base64: !Sub |
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
 
-          cat <<HTML > /var/www/html/index.html
-          <!DOCTYPE html>
-          <html lang="es">
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Parcial AWS EC2</title>
-            <style>
-              body {
-                margin: 0;
-                font-family: Arial, Helvetica, sans-serif;
-                background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
-                color: white;
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
+```
+      cat <<HTML > /var/www/html/index.html
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Parcial AWS EC2</title>
+        <style>
+          body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a, #2563eb);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
 
-              .card {
-                background: rgba(255, 255, 255, 0.12);
-                border: 1px solid rgba(255, 255, 255, 0.25);
-                border-radius: 24px;
-                padding: 45px;
-                width: 80%;
-                max-width: 850px;
-                text-align: center;
-                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-                backdrop-filter: blur(10px);
-              }
+          .card {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 24px;
+            padding: 45px;
+            width: 80%;
+            max-width: 850px;
+            text-align: center;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+          }
 
-              h1 {
-                font-size: 42px;
-                margin-bottom: 10px;
-              }
+          h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+          }
 
-              h2 {
-                font-size: 26px;
-                color: #fde68a;
-                margin-bottom: 25px;
-              }
+          h2 {
+            font-size: 26px;
+            color: #fde68a;
+            margin-bottom: 25px;
+          }
 
-              p {
-                font-size: 18px;
-                line-height: 1.6;
-              }
+          p {
+            font-size: 18px;
+            line-height: 1.6;
+          }
 
-              .badge {
-                display: inline-block;
-                margin: 10px;
-                padding: 12px 18px;
-                border-radius: 999px;
-                background: #22c55e;
-                color: #052e16;
-                font-weight: bold;
-              }
+          .badge {
+            display: inline-block;
+            margin: 10px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            background: #22c55e;
+            color: #052e16;
+            font-weight: bold;
+          }
 
-              .footer {
-                margin-top: 30px;
-                font-size: 15px;
-                color: #dbeafe;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="card">
-              <h1>${InstanceDescription} 🚀</h1>
-              <h2>Parcial en pareja - CloudFormation + GitHub Actions</h2>
+          .footer {
+            margin-top: 30px;
+            font-size: 15px;
+            color: #dbeafe;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>${InstanceDescription} 🚀</h1>
+          <h2>Parcial en pareja - CloudFormation + GitHub Actions</h2>
 
-              <p>
-                Esta instancia EC2 fue creada automáticamente usando una plantilla
-                de CloudFormation almacenada en GitHub.
-              </p>
+          <p>
+            Esta instancia EC2 fue creada automáticamente usando una plantilla
+            de CloudFormation almacenada en GitHub.
+          </p>
 
-              <div>
-                <span class="badge">EC2</span>
-                <span class="badge">CloudFormation</span>
-                <span class="badge">GitHub Actions</span>
-                <span class="badge">UserData</span>
-              </div>
+          <div>
+            <span class="badge">EC2</span>
+            <span class="badge">CloudFormation</span>
+            <span class="badge">GitHub Actions</span>
+            <span class="badge">UserData</span>
+          </div>
 
-              <p>
-                Cambio visible desde el archivo <strong>template/ec2.yaml</strong>.
-              </p>
+          <p>
+            Cambio visible desde el archivo <strong>template/ec2.yaml</strong>.
+          </p>
 
-              <div class="footer">
-                Proyecto colaborativo realizado para el parcial de AWS.
-              </div>
-            </div>
-          </body>
-          </html>
-          HTML
+          <div class="footer">
+            Proyecto colaborativo realizado para el parcial de AWS.
+          </div>
+        </div>
+      </body>
+      </html>
+      HTML
+```
 
 Outputs:
-  InstanceId:
-    Description: ID de la instancia EC2 creada
-    Value: !Ref MyInstanceClase
+InstanceId:
+Description: ID de la instancia EC2 creada
+Value: !Ref MyInstanceClase
 
-  PublicIP:
-    Description: IP publica de la instancia EC2
-    Value: !GetAtt MyInstanceClase.PublicIp
+PublicIP:
+Description: IP publica de la instancia EC2
+Value: !GetAtt MyInstanceClase.PublicIp
 
-  WebsiteURL:
-    Description: URL del servidor web Apache
-    Value: !Sub "http://${MyInstanceClase.PublicDnsName}"
-```
+WebsiteURL:
+Description: URL del servidor web Apache
+Value: !Sub "http://${MyInstanceClase.PublicDnsName}"
