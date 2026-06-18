@@ -79,7 +79,6 @@ systemctl enable httpd
             max-width: 850px;
             text-align: center;
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(10px);
           }
 
           h1 {
